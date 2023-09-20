@@ -23,7 +23,11 @@ o.password = true
 o.rmempty = true
 
 o = e:option(Value, "interface", translate("Network interface"))
-for t, e in ipairs(i.net.devices()) do if e ~= "lo" then o:value(e) end end
+for t, e in ipairs(i.net.devices()) do
+	if e ~= 'lo' and not string.match(e, '^docker.*$') and not string.match(e, '^sit.*$') and not string.match(e, '^dummy.*$') and not string.match(e, '^teql.*$') and not string.match(e, '^veth.*$')  and not string.match(e, '^ztly.*$') then
+		o:value(e)
+	end
+end
 o.rmempty = false
 
 o = e:option(Value, "ipaddr", translate("IP address"))
