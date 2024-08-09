@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mentohust
 PKG_VERSION:=0.3.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_FIXUP:=autoreconf
 
@@ -37,6 +37,8 @@ define Build/Prepare
 	$(SED) 's/dhclient/udhcpc -i/g' $(PKG_BUILD_DIR)/myconfig.c
 endef
 
+TARGET_CFLAGS += -Wno-incompatible-pointer-types
+
 define Build/Compile
 	#$(Build/Compile/$(PKG_NAME))
 	$(MAKE) -C $(PKG_BUILD_DIR)/ \
@@ -47,7 +49,9 @@ define Build/Compile
 endef
 
 define Package/mentohust/install
-	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/config $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/mentohust.init $(1)/etc/init.d/mentohust
+	$(INSTALL_CONF) ./files/mentohust.config $(1)/etc/config/mentohust
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mentohust $(1)/usr/sbin/
 endef
 
